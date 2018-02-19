@@ -3,9 +3,22 @@ import datetime
 
 
 class Gnewsfeed:
-    def __init__(self, topic,):
-        self.topic = topic
-        self.feedUrl = 'https://news.google.com/news/rss/search/section/q/' + self.topic + '?hl=de&gl=DE&ned=de'
+    def __init__(self, topic, language="DE", country=None):
+        """get the data from the google news rss and hold it for use 
+        
+        Arguments:
+            topic {string} -- [the Topic you want ]
+        
+        Keyword Arguments:
+            language {string} -- [the language of the news] (default: {"DE"})
+            country {string} -- [from where are the news if not set the same as the language(dont kow if it worke)] (default: {None})
+        """
+
+        if country == None:
+            country = language
+
+        self.feedUrl = 'https://news.google.de/news/feeds?pz=1&cf=all&ned={country}&hl={language}&q={topic}'.format(
+            topic=topic, language=language, country=country)
         self.feed = feedparser.parse(self.feedUrl)
         
     def datetimeconv(self, dtinput):
@@ -24,21 +37,24 @@ class Gnewsfeed:
         return dtoutput
 
     def get_feedinfo(self):
-        """Gives back the feed information as a dict
-            --------schuld change to list...----------
+        """
+        Gives back the feed information as a liat
 
         Returns:
-            [dict] -- [title, link, date, ]
+            [list] -- [title, link, update (datetime objekt to actuell timezone), ]
         """
 
         f = self.feed['feed']
-        return {
-                'title' : f['title'],
-                'link' : f['link'],
-                'date' : self.datetimeconv(f['updated'])
-        }
+        return [f['title'], f['link'], self.datetimeconv(f['updated'])]
 
     def get_news(self):
+        """
+        Giives all news from the news rss feed back as a list
+        
+        Returns:
+            [list] -- [Titel, link, publichdate (as datetime objekt to the actuell timezone)]
+        """
+
         r = []
         f = self.feed['entries']
         for post in f:
@@ -47,6 +63,6 @@ class Gnewsfeed:
         return r
 
 if __name__ == "__main__":
-    g = Gnewsfeed('motorrad')
-    #print(g.get_feedinfo())
-    g.get_news()
+    g = Gnewsfeed('motorrad', language="de", country="us")
+    print(g.get_feedinfo())
+    print(g.get_news())
