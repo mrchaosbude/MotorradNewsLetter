@@ -1,8 +1,12 @@
 import feedparser
 import datetime
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class Gnewsfeed:
+    
     def __init__(self, topic, language="DE", country=None):
         """get the data from the google news rss and hold it for use 
         
@@ -20,7 +24,12 @@ class Gnewsfeed:
         self.feedUrl = 'https://news.google.de/news/feeds?pz=1&cf=all&ned={country}&hl={language}&q={topic}'.format(
             topic=topic, language=language, country=country)
         self.feed = feedparser.parse(self.feedUrl)
-        
+        logger.info('bozo status: {}'.format(self.feed.bozo))
+        if self.feed.bozo != 0:
+            raise Exception('No Conection or feed Corupt!' + self.feed.bozo_exception)  # [Bug] exception is a typeerror
+        logger.info('Feed status code : {}'.format(self.feed.status))            
+        logger.debug(self.feed)
+
     def datetimeconv(self, dtinput):
         """Converst date to datetime objekt and
             GMT/UTC to the aktuale timezone 
@@ -63,6 +72,6 @@ class Gnewsfeed:
         return r
 
 if __name__ == "__main__":
-    g = Gnewsfeed('motorrad', language="de", country="us")
-    print(g.get_feedinfo())
-    print(g.get_news())
+    g = Gnewsfeed('motorrad', language="de")
+    #print(g.get_feedinfo())
+    #print(g.get_news())

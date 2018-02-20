@@ -9,6 +9,7 @@ chromedriver.exe
 __pycache__/
 *.so
 *~
+config.py
 
 # due to using tox and pytest
 .tox
