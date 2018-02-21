@@ -20,8 +20,7 @@ class Gnewsfeed:
 
         if country == None:
             country = language
-
-        self.feedUrl = 'https://news.google.de/news/feeds?pz=1&cf=all&ned={country}&hl={language}&q={topic}'.format(
+        self.feedUrl = 'https://news.google.com/news/rss/search/section/q/{topic}/{topic}?hl={language}&gl=&ned={country}'.format(
             topic=topic, language=language, country=country)
         self.feed = feedparser.parse(self.feedUrl)
         logger.info('bozo status: {}'.format(self.feed.bozo))
@@ -31,6 +30,9 @@ class Gnewsfeed:
         logger.info('Feed status code : {}'.format(self.feed.status))            
         logger.debug(self.feed)
 
+    def __repr__(self):
+        return "Feed Titel: {} \nLast feed Updat: {} \nFeed URL: {}".format(self.get_feedinfo()[0], self.get_feedinfo()[2], self.get_feedinfo()[1])
+    
     def datetimeconv(self, dtinput):
         """Converst date to datetime objekt and
             GMT/UTC to the aktuale timezone 
@@ -55,6 +57,7 @@ class Gnewsfeed:
         """
 
         f = self.feed['feed']
+        logger.info('Title: {} Link: {} Update: {}'.format(f.title, f.link, self.datetimeconv(f.updated)))
         return [f['title'], f['link'], self.datetimeconv(f['updated'])]
 
     def get_news(self):
@@ -79,5 +82,6 @@ class NoConectionError(Exception):
         
 if __name__ == "__main__":
     g = Gnewsfeed('motorrad', language="de")
+    print(g)
     #print(g.get_feedinfo())
     #print(g.get_news())
