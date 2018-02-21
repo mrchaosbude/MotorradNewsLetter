@@ -26,7 +26,8 @@ class Gnewsfeed:
         self.feed = feedparser.parse(self.feedUrl)
         logger.info('bozo status: {}'.format(self.feed.bozo))
         if self.feed.bozo != 0:
-            raise Exception('No Conection or feed Corupt!' + self.feed.bozo_exception)  # [Bug] exception is a typeerror
+            raise NoConectionError('No Conection or feed Corupt!', self.feed.bozo_exception)  # [Bug] exception is a typeerror
+        
         logger.info('Feed status code : {}'.format(self.feed.status))            
         logger.debug(self.feed)
 
@@ -71,6 +72,11 @@ class Gnewsfeed:
             r.append(l)
         return r
 
+class NoConectionError(Exception):
+    def __init__(self, message, errors):
+        # Call the base class constructor with the parameters it needs
+        super().__init__(message, errors)
+        
 if __name__ == "__main__":
     g = Gnewsfeed('motorrad', language="de")
     #print(g.get_feedinfo())
