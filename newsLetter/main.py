@@ -1,14 +1,11 @@
 from datetime import date, datetime # days_to
 from urllib.request import urlopen
 import json
-from newsapi import NewsApiClient
 import logging
 from gnewsfeed import Gnewsfeed
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-ow_api='17e753103a9079bbf84d9bb44390c8ac'
-news_api= '0cbc1a2e47ad4e1e93d32abb6b329e5b'
 
 
 def days_to(first_month, last_month):
@@ -65,16 +62,7 @@ def open_wether(city, api, ):
     logger.info(result)
     return result
 
-def news():
-    url = ('https://newsapi.org/v2/top-headlines?'
-        'country=de&'
-        'apiKey=' + news_api)
-    response = urlopen(url).read().decode('utf-8')
-    print (response)
-    
-
-
 if __name__ == "__main__":
     #print(days_to(3, 10))
     #open_wether("berlin", ow_api)
-    news()
+
