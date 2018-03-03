@@ -39,17 +39,24 @@ class owether:
         return result
 
     def forecast(self, city):
+        resultList= []
         obj = self.__getjson(city)
         logger.debug(obj)
         for item in obj['list']:
-            #print(datetime.fromtimestamp(int(item['dt'])).strftime('%H:%M:%S'))
-            #print(item['main']['temp'])
-            #print(item['weather'][0]['description'])
-            #print(item['weather'])
-            pass
-        print(obj)
+            d = {
+            'time' : datetime.fromtimestamp(int(item['dt'])).strftime('%H:%M:%S'),
+            'date' : datetime.fromtimestamp(int(item['dt'])).strftime('%Y-%m-%d'),
+            'unixtime' : item['dt'],
+            'temp' : item['main']['temp'],
+            'condition' : item['weather'][0]['description'],
+            'icon' : item['weather'][0]['icon'],
+            }
+            resultList.append(d)
+            break
+        #print(obj)
+        print(resultList)
     
 
 if __name__ == "__main__":
     ow = owether(cred.ow_api)
-    ow.forecast("berlin")
+    ow.forecast("genthin")
